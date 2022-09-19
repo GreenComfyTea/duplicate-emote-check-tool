@@ -154,7 +154,7 @@ function calculateDuplicateEmotes(event) {
 
 	const channelName = channel.value;
 
-	const urlParameters = `/?user=${channelName}`;
+	const urlParameters = `Emote-Duplicate-Check-Tool/?user=${channelName}`;
 	if (DEBUG) {
 		urlParameters += `&debug=true`;
 	}
@@ -175,16 +175,17 @@ function syncGifs() {
 function encodeQueryData(data) { 
     const ret = [];
     for (let d in data) {
-        if (data[d])
+        if (data[d]) {
             ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
+		}
     }
     return ret.join('&');
 }
 
 const getJson = (url) => fetch(url, { method: "GET" }).then(async (response) => {
-	var contentType = response.headers.get("Content-Type");
+	const contentType = response.headers.get("Content-Type");
 	if (contentType.includes("text/plain")) {
-		var text = await response.text();
+		const text = await response.text();
 		return text;
 	} else if (contentType.includes("application/json")) {
 		return await response.json();
