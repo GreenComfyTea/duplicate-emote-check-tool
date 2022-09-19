@@ -154,7 +154,7 @@ function calculateDuplicateEmotes(event) {
 
 	const channelName = channel.value;
 
-	const urlParameters = `/?user=${channelName}`;
+	const urlParameters = `/Emote-Duplicate-Check-Tool/?user=${channelName}`;
 	if (DEBUG) {
 		urlParameters += `&debug=true`;
 	}
