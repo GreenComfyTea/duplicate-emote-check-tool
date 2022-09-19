@@ -231,9 +231,13 @@ function generateHtml() {
 			image.src = emoteDuplicate.imageUrl;
 			image.id = "emote-image";
 			
-			image.decode().then(() => {
+			image.onload = function() {
 				sizeTag.value = `${image.naturalWidth}x${image.naturalHeight}`;
-			})
+			};
+
+			//image.decode().then(() => {
+			//	sizeTag.value = `${image.naturalWidth}x${image.naturalHeight}`;
+			//})
 
 			emoteLink.appendChild(image);
 			emoteImage.appendChild(emoteLink);
