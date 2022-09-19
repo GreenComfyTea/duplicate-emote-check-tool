@@ -159,7 +159,7 @@ function calculateDuplicateEmotes(event) {
 		urlParameters += `&debug=true`;
 	}
 	
-	window.history.replaceState(null, "", urlParameters);
+	window.history.pushState(null, "", urlParameters);
 
     Channel.init(channelName ? channelName.toLowerCase() : "greencomfytea");
 }
