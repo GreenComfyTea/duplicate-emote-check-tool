@@ -136,10 +136,49 @@ let Channel = {
 
 	init: function(channel) {
 		Channel.info.channel = channel;
-		document.title = "Emote Dup Check • " + channel;
+		document.title = "Emote Dup Check Tool • " + channel;
 		Channel.load();
 	}
 };
+
+
+
+// https://stackoverflow.com/questions/111529/how-to-create-query-parameters-in-javascript
+function encodeQueryData(data) { 
+    const ret = [];
+    for (let d in data) {
+        if (data[d]) {
+            ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
+		}
+    }
+    return ret.join('&');
+}
+
+const onReady = (callback) => {
+	if (document.readyState != "loading") {
+		callback();
+	}
+	else if (document.addEventListener) {
+		document.addEventListener("DOMContentLoaded", callback);
+	}
+	else {
+		document.attachEvent("onreadystatechange", function() {
+			if (document.readyState == "complete") {
+				callback();
+			}
+		});
+	}
+};
+
+const getJson = (url) => fetch(url, { method: "GET" }).then(async (response) => {
+	const contentType = response.headers.get("Content-Type");
+	if (contentType.includes("text/plain")) {
+		const text = await response.text();
+		return text;
+	} else if (contentType.includes("application/json")) {
+		return await response.json();
+	}
+}).catch((error) => console.error(error));
 
 function calculateDuplicateEmotes(event) {
 	if (event != null) {
@@ -154,7 +193,7 @@ function calculateDuplicateEmotes(event) {
 
 	const channelName = channel.value;
 
-	const urlParameters = `/Emote-Duplicate-Check-Tool/?user=${channelName}`;
+	let urlParameters = `/Emote-Duplicate-Check-Tool/?user=${channelName}`;
 	if (DEBUG) {
 		urlParameters += `&debug=true`;
 	}
@@ -171,31 +210,9 @@ function syncGifs() {
 	}
 }
 
-// https://stackoverflow.com/questions/111529/how-to-create-query-parameters-in-javascript
-function encodeQueryData(data) { 
-    const ret = [];
-    for (let d in data) {
-        if (data[d]) {
-            ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
-		}
-    }
-    return ret.join('&');
-}
-
-const getJson = (url) => fetch(url, { method: "GET" }).then(async (response) => {
-	const contentType = response.headers.get("Content-Type");
-	if (contentType.includes("text/plain")) {
-		const text = await response.text();
-		return text;
-	} else if (contentType.includes("application/json")) {
-		return await response.json();
-	}
-}).catch((error) => console.error(error));
-
 function generateHtml() {
 	var noDuplicates = true;
 
-	//Object.entries(Channel.info.duplicateEmotes).map((emote) => {
 	for(const emote of Object.entries(Channel.info.duplicateEmotes)) {
 		noDuplicates = false;
 
@@ -222,28 +239,25 @@ function generateHtml() {
 
 			const emoteLink = document.createElement("a");
 			emoteLink.href = `${emoteDuplicate.url}`;
-			
-			const sizeTag = document.createElement("input");
-			sizeTag.type = "tag";
-			sizeTag.value = "?";
 
 			const image = new Image();
 			image.src = emoteDuplicate.imageUrl;
 			image.id = "emote-image";
+
+			const sizeTagLabel = document.createElement("div");
+			sizeTagLabel.id = "tag-label";
 			
 			image.onload = function() {
-				sizeTag.value = `${image.naturalWidth}x${image.naturalHeight}`;
+				const sizeTag = document.createTextNode(`${image.naturalWidth}x${image.naturalHeight}`);
+				sizeTagLabel.appendChild(sizeTag);
+				//sizeTag.value = `${image.naturalWidth}x${image.naturalHeight}`;
 			};
-
-			//image.decode().then(() => {
-			//	sizeTag.value = `${image.naturalWidth}x${image.naturalHeight}`;
-			//})
 
 			emoteLink.appendChild(image);
 			emoteImage.appendChild(emoteLink);
 
 			const submitTagLabel = document.createElement("div");
-			submitTagLabel.id = "tag-label";
+			submitTagLabel.id = "submit-tag-label";
 
 			const submitButton = document.createElement("input");
 			submitButton.type = "button";
@@ -251,11 +265,6 @@ function generateHtml() {
 			submitButton.value = `${emoteDuplicate.type}`;
 
 			submitTagLabel.appendChild(submitButton);
-
-			const sizeTagLabel = document.createElement("div");
-			sizeTagLabel.id = "tag-label";
-
-			sizeTagLabel.appendChild(sizeTag);
 
 			emoteDuplicateEntity.appendChild(emoteImage);
 			emoteDuplicateEntity.appendChild(submitTagLabel);
@@ -265,10 +274,7 @@ function generateHtml() {
 				const globalTagLabel = document.createElement("div");
 				globalTagLabel.id = "tag-label";
 
-				const globalTag = document.createElement("input");
-				globalTag.type = "tag";
-				globalTag.value = "Global";
-
+				const globalTag = document.createTextNode("Global");
 				globalTagLabel.appendChild(globalTag);
 
 				emoteDuplicateEntity.appendChild(globalTagLabel);
@@ -306,22 +312,6 @@ const result = document.getElementById("result");
 
 generator.addEventListener("submit", (event) => calculateDuplicateEmotes(event));
 
-const onReady = (callback) => {
-	if (document.readyState != "loading") {
-		callback();
-	}
-	else if (document.addEventListener) {
-		document.addEventListener("DOMContentLoaded", callback);
-	}
-	else {
-		document.attachEvent("onreadystatechange", function() {
-			if (document.readyState == "complete") {
-				callback();
-			}
-		});
-	}
-};
-  
 onReady(() => { 
 	const searchParameters = new URLSearchParams(window.location.search);
 	if(searchParameters.get("debug")) {
