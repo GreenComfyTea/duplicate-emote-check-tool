@@ -319,7 +319,7 @@ onReady(() => {
 	}
 
 	if(searchParameters.has("channel")) {
-		channel.value = searchParameters.get("user");
+		channel.value = searchParameters.get("channel");
 		calculateDuplicateEmotes(null);
 	}
 });
