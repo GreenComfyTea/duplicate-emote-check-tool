@@ -16,19 +16,10 @@ Check if you have duplicate emotes on FrankerFaceZ, BetterTTV and 7TV for Twitch
 
 Example: https://greencomfytea.github.io/emote-duplicate-check-tool?channel=greencomfytea&debug=true
 
-# How to install:
-1. Install [REFramework](https://www.nexusmods.com/monsterhunterrise/mods/26);
-2. (Windows only) Install [REFramework Direct2D](https://www.nexusmods.com/monsterhunterrise/mods/134);
->**:pushpin: NOTE:**  Skip this step if you are using Steam Deck/Proton/Wine/Linux. REFramework Direct2D **must not** be installed for the mod to work.
-3. Download the mod:
-    * Official release can be downloaded from [Nexus Mods](https://www.nexusmods.com/monsterhunterrise/mods/50);
-    * Nightly builds are available in [this repo](https://github.com/GreenComfyTea/MHR-Overlay) and can contain broken functionality, debugging info on screen, bugs and might require the latest [nightly build](https://github.com/praydog/REFramework-nightly/releases) of [REFramework](https://www.nexusmods.com/monsterhunterrise/mods/26). Use with caution!
-4. Extract the mod from the archive and place it in MonsterHunterRise folder. Refer to [FAQ](https://github.com/GreenComfyTea/MHR-Overlay/wiki/FAQ) to verify how the file hierarchy should look like if everything is done correctly.
-
 # Credits
-**GreenComfyTea** - me ;)
+**GreenComfyTea** - me ;)  
 **giambaJ** - creator of [jChat](https://github.com/giambaJ/jChat). The tool is based on his code.  
-**Teclu** - Twitch frog and my friend. Helped a lot. 
+**Teclu** - Twitch frog and my friend. Helped a lot.
   
 ***
 # Support
