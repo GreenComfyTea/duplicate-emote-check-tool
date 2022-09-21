@@ -17,6 +17,11 @@ let Channel = {
 		for (const endpoint of ffzEndpoints) {
 			const json = await getJson(`https://api.betterttv.net/3/cached/frankerfacez/${endpoint}`);
 
+			if(json.length == 0) {
+				console.error("BTTV: No user found!");
+				continue;
+			}
+
 			const isGlobal = endpoint == "emotes/global";
 
 			json.forEach(emote => {
@@ -58,6 +63,11 @@ let Channel = {
 		for (const endpoint of bttvEndpoints) {
 			let json = await getJson(`https://api.betterttv.net/3/cached/${endpoint}`);
 
+			if(json.message != undefined) {
+				console.error("BTTV: " + json.message);
+				continue;
+			}
+
 			const isGlobal = endpoint == "emotes/global";
 				
 			if (!Array.isArray(json)) {
@@ -91,6 +101,11 @@ let Channel = {
 		const _7tvEndpoints = ["emotes/global", `users/${encodeURIComponent(channelID)}/emotes`];
 		for (const endpoint of _7tvEndpoints) {
 			const json = await getJson(`https://api.7tv.app/v2/${endpoint}`);
+
+			if(json.error != undefined) {
+				console.error("7TV: " + json.error);
+				continue;
+			}
 
 			const isGlobal = endpoint == "emotes/global";
 
@@ -142,14 +157,14 @@ let Channel = {
 };
 
 // https://stackoverflow.com/questions/111529/how-to-create-query-parameters-in-javascript
-function encodeQueryData(data) { 
-    const ret = [];
-    for (let d in data) {
-        if (data[d]) {
-            ret.push(encodeURIComponent(d) + '=' + encodeURIComponent(data[d]));
+function encodeQueryData(urlParameters) { 
+    const encodedUrlParameters = [];
+    for (let urlParameter in urlParameters) {
+        if (urlParameters[urlParameter]) {
+            encodedUrlParameters.push(encodeURIComponent(urlParameter) + '=' + encodeURIComponent(urlParameters[urlParameter]));
 		}
     }
-    return ret.join('&');
+    return encodedUrlParameters.join('&');
 }
 
 const onReady = (callback) => {
@@ -192,10 +207,10 @@ function calculateDuplicateEmotes(event) {
 	const channelName = channel.value;
 
 	let urlParameters = {};
-	urlParameters["channel"] = channelName;
+	urlParameters.channel = channelName;
 
 	if (DEBUG) {
-		urlParameters["debug"] = true;
+		urlParameters.debug = true;
 	}
 
 	encodedUrlParameters = encodeQueryData(urlParameters);
@@ -317,8 +332,8 @@ generator.addEventListener("submit", (event) => calculateDuplicateEmotes(event))
 
 onReady(() => { 
 	const searchParameters = new URLSearchParams(window.location.search);
-	if(searchParameters.get("debug")) {
-		DEBUG = true;
+	if(searchParameters.has("debug")) {
+		DEBUG = searchParameters.get("debug").toLocaleLowerCase() == "true";
 	}
 
 	if(searchParameters.has("channel")) {
