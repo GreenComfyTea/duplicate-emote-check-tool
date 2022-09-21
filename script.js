@@ -214,7 +214,7 @@ function calculateDuplicateEmotes(event) {
 	}
 
 	encodedUrlParameters = encodeQueryData(urlParameters);
-	let urlParameterString = `${window.location.pathname}${encodedUrlParameters == "" ? "" : "?"}?${encodedUrlParameters}`;
+	let urlParameterString = `${window.location.pathname}${encodedUrlParameters == "" ? "" : "?"}${encodedUrlParameters}`;
 
 	window.history.pushState(null, "", urlParameterString);
 
