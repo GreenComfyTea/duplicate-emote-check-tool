@@ -141,8 +141,6 @@ let Channel = {
 	}
 };
 
-
-
 // https://stackoverflow.com/questions/111529/how-to-create-query-parameters-in-javascript
 function encodeQueryData(data) { 
     const ret = [];
@@ -193,12 +191,17 @@ function calculateDuplicateEmotes(event) {
 
 	const channelName = channel.value;
 
-	let urlParameters = `/emote-duplicate-check-tool/?channel=${channelName}`;
+	let urlParameters = {};
+	urlParameters["channel"] = channelName;
+
 	if (DEBUG) {
-		urlParameters += `&debug=true`;
+		urlParameters["debug"] = true;
 	}
-	
-	window.history.pushState(null, "", urlParameters);
+
+	let urlParameterString = `${window.location.pathname}?${encodeQueryData(urlParameters)}`;
+	console.log(urlParameterString);
+
+	window.history.pushState(null, "", urlParameterString);
 
     Channel.init(channelName ? channelName.toLowerCase() : "greencomfytea");
 }
