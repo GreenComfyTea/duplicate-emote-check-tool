@@ -1,5 +1,5 @@
 # Emote Duplicate Check Tool
-**Check if you have duplicates amongst your `Twitch Sub`, `FrankerFaceZ`, `BetterTTV and `7TV` emotes.**
+**Check if you have duplicates amongst your `Twitch Sub`, `FrankerFaceZ`, `BetterTTV` and `7TV` emotes.**
 
 ![image](https://user-images.githubusercontent.com/30152047/191189377-a9ffd0ea-ae62-4341-8e06-3aabd6de1f40.png)
 
