@@ -1,30 +1,97 @@
 let DEBUG = false;
 
+const MAX_INT = 2147483647;
+const proxy = "https://api.allorigins.win/raw?url=";
+
 let Channel = {
 	info: {
-		channel: null,
+		name: null,
+		id: 0,
 		emotes: {},
 		duplicateEmotes: {}
 	},
 
-	loadEmotes: async function(channelID) {
-		Channel.info.emotes = {};
-		Channel.info.duplicateEmotes = {};
+	loadTwitchEmotes: async function() {
+		DEBUG && console.log("[Twitch] Loading Emotes...");
 
-		DEBUG && console.log("Loading FFZ emotes...");
-		// Load FFZ emotes
-		const ffzEndpoints = ["emotes/global", `users/twitch/${encodeURIComponent(channelID)}`];
-		for (const endpoint of ffzEndpoints) {
-			const json = await getJson(`https://api.betterttv.net/3/cached/frankerfacez/${endpoint}`);
+		const twitchToolsUrl = `https://twitch-tools.rootonline.de/emotes.php?channel=${Channel.info.name}`;
 
-			if(json.length == 0) {
-				console.error("BTTV: No user found!");
+		const htmlString = await getHtml(twitchToolsUrl);
+		
+		const domParser = new DOMParser();
+		const html = domParser.parseFromString(htmlString, 'text/html');
+
+		const emotesFoundCountHtml = html.getElementsByClassName("col-12 mb-3");
+
+		if (emotesFoundCountHtml.length == 0) {
+			console.log("[Twitch] No user found!");
+			return;
+		}
+
+		const emotesFoundCountString = emotesFoundCountHtml[0].textContent;
+
+		if (emotesFoundCountString.includes("No emotes")) {
+			console.log("[Twitch] No user found!");
+			return;
+		}
+
+		const emotesHtml = html.getElementsByClassName("row mb-3")[0];
+		const emoteCardsArray = emotesHtml.getElementsByClassName("card-body");
+
+		for (const emoteCard of emoteCardsArray) {
+			const emoteNameArray = emoteCard.getElementsByClassName("mt-2 text-center");
+			const emoteName = emoteNameArray.length == 0 ? "followerEmote" + Math.floor(Math.random() * MAX_INT) : emoteNameArray[0].textContent;
+			
+			const imageUrlArray = emoteCard.getElementsByTagName("a"); 
+			if (imageUrlArray.length == 0) {
 				continue;
 			}
 
+			const imageUrl = imageUrlArray[0].href.replace("light","dark");
+
+			const emoteID = imageUrl.split('/')[5];
+
+			const new_emote = {
+				name: emoteName,
+				id: emoteID,
+				type: "Twitch Sub",
+				url: imageUrl,
+				imageUrl: imageUrl,
+				isGlobal: false,
+				upscale: false
+			};
+
+			if (Channel.info.emotes[emoteName] == undefined) {
+				Channel.info.emotes[emoteName] = [new_emote];
+			}
+			else {
+				Channel.info.emotes[emoteName].push(new_emote);
+				Channel.info.duplicateEmotes[emoteName] = Channel.info.emotes[emoteName];
+			}
+
+			DEBUG && console.log(`[Twitch] ${emoteName}: ${imageUrl}`);
+		}
+
+		DEBUG && console.log(`[Twitch] Loading Emotes from ${twitchToolsUrl}: Done!`);
+	},
+
+	loadFfzEmotes: async function() {
+		DEBUG && console.log("[FFZ] Loading Emotes...");
+
+		const ffzEndpoints = ["emotes/global", `users/twitch/${encodeURIComponent(Channel.info.id)}`];
+		for (const endpoint of ffzEndpoints) {
+			const json = await getJson(`https://api.betterttv.net/3/cached/frankerfacez/${endpoint}`);
+
 			const isGlobal = endpoint == "emotes/global";
+			const globalString = isGlobal ? " GLOBAL" : "";
+
+			if(json.length == 0) {
+				console.error(`[FFZ${globalString}] No user found!`);
+				continue;
+			}
 
 			json.forEach(emote => {
+				const url = `https://www.frankerfacez.com/emoticon/${emote.id}`;
 				let imageUrl = "";
 				let upscale = false;
 
@@ -37,9 +104,10 @@ let Channel = {
 				}
 
 				const new_emote = {
+					name: emote.code,
 					id: emote.id,
 					type: "FFZ",
-					url: `https://www.frankerfacez.com/emoticon/${emote.id}`,
+					url: url,
 					imageUrl: imageUrl,
 					isGlobal: isGlobal,
 					upscale: upscale
@@ -52,34 +120,43 @@ let Channel = {
 					Channel.info.emotes[emote.code].push(new_emote);
 					Channel.info.duplicateEmotes[emote.code] = Channel.info.emotes[emote.code];
 				}
+
+				DEBUG && console.log(`[FFZ${globalString}] ${emote.code}: ${url}`);
 			});
 
-			DEBUG && console.log(`Loading FFZ ${endpoint}: done!`);
+			DEBUG && console.log(`[FFZ${globalString}] Loading Emotes from ${endpoint}: Done!`);
 		}
+	},
 
-		DEBUG && console.log("Loading BTTV emotes...");
-		// Load BTTV emotes
-		const bttvEndpoints = ["emotes/global", `users/twitch/${encodeURIComponent(channelID)}`];
+	loadBttvEmotes: async function() {
+		DEBUG && console.log("Loading BTTV Emotes...");
+
+		const bttvEndpoints = ["emotes/global", `users/twitch/${encodeURIComponent(Channel.info.id)}`];
 		for (const endpoint of bttvEndpoints) {
 			let json = await getJson(`https://api.betterttv.net/3/cached/${endpoint}`);
 
+			const isGlobal = endpoint == "emotes/global";
+			const globalString = isGlobal ? " GLOBAL" : "";
+
 			if(json.message != undefined) {
-				console.error("BTTV: " + json.message);
+				console.error(`[BTTV${globalString}] Error: ${json.message}`);
 				continue;
 			}
 
-			const isGlobal = endpoint == "emotes/global";
-				
 			if (!Array.isArray(json)) {
 				json = json.channelEmotes.concat(json.sharedEmotes);
 			}
 
 			json.forEach(emote => {
+				const url = `https://betterttv.com/emotes/${emote.id}`;
+				const imageUrl = `https://cdn.betterttv.net/emote/${emote.id}/3x`
+
 				const new_emote = {
+					name: emote.code,
 					id: emote.id,
 					type: "BTTV",
-					url: `https://betterttv.com/emotes/${emote.id}`,
-					imageUrl: `https://cdn.betterttv.net/emote/${emote.id}/3x`,
+					url: url,
+					imageUrl: imageUrl,
 					isGlobal: isGlobal,
 					zeroWidth: ["5e76d338d6581c3724c0f0b2", "5e76d399d6581c3724c0f0b8", "567b5b520e984428652809b6", "5849c9a4f52be01a7ee5f79d", "567b5c080e984428652809ba", "567b5dc00e984428652809bd", "58487cc6f52be01a7ee5f205", "5849c9c8f52be01a7ee5f79e"].includes(emote.id) // "5e76d338d6581c3724c0f0b2" => cvHazmat, "5e76d399d6581c3724c0f0b8" => cvMask, "567b5b520e984428652809b6" => SoSnowy, "5849c9a4f52be01a7ee5f79d" => IceCold, "567b5c080e984428652809ba" => CandyCane, "567b5dc00e984428652809bd" => ReinDeer, "58487cc6f52be01a7ee5f205" => SantaHat, "5849c9c8f52be01a7ee5f79e" => TopHat
 				};
@@ -91,30 +168,39 @@ let Channel = {
 					Channel.info.emotes[emote.code].push(new_emote);
 					Channel.info.duplicateEmotes[emote.code] = Channel.info.emotes[emote.code];
 				}
+
+				DEBUG && console.log(`[BTTV${globalString}] ${emote.code}: ${url}`);
 			});
 
-			DEBUG && console.log(`Loading BTTV ${endpoint}: done!`);
+			DEBUG && console.log(`[BTTV${globalString}] Loading Emotes from ${endpoint}: Done!`);
 		}
+	},
 
-		DEBUG && console.log("Loading 7TV emotes...");
-		// Load 7TV emotes
-		const _7tvEndpoints = ["emotes/global", `users/${encodeURIComponent(channelID)}/emotes`];
+	load7tvEmotes: async function() {
+		DEBUG && console.log("Loading 7TV Emotes...");
+
+		const _7tvEndpoints = ["emotes/global", `users/${encodeURIComponent(Channel.info.id)}/emotes`];
 		for (const endpoint of _7tvEndpoints) {
 			const json = await getJson(`https://api.7tv.app/v2/${endpoint}`);
 
+			const isGlobal = endpoint == "emotes/global";
+			const globalString = isGlobal ? " GLOBAL" : "";
+
 			if(json.error != undefined) {
-				console.error("7TV: " + json.error);
+				console.error(`[7TV${globalString}] Error: ${json.error}`);
 				continue;
 			}
-
-			const isGlobal = endpoint == "emotes/global";
-
+			
 			json.forEach(emote => {
+				const url = `https://7tv.app/emotes/${emote.id}`;
+				const imageUrl = emote.urls[emote.urls.length - 1][1];
+
 				const new_emote = {
+					name: emote.name,
 					id: emote.id,
 					type: "7TV",
-					url: `https://7tv.app/emotes/${emote.id}`,
-					imageUrl: emote.urls[emote.urls.length - 1][1],
+					url: url,
+					imageUrl: imageUrl,
 					isGlobal: isGlobal,
 					zeroWidth: emote.visibility_simple.includes("ZERO_WIDTH")
 				};
@@ -126,16 +212,30 @@ let Channel = {
 					Channel.info.emotes[emote.name].push(new_emote);
 					Channel.info.duplicateEmotes[emote.name] = Channel.info.emotes[emote.name];
 				}
+
+				DEBUG && console.log(`[7TV${globalString}] ${emote.name}: ${url}`);
 			});
 
-			DEBUG && console.log(`Loading 7TV ${endpoint}: done!`);
+			DEBUG && console.log(`[7TV${globalString}] Loading Emotes from ${endpoint}: Done!`);
 		}
+	},
 
-		DEBUG && console.log("Loading emotes: done!");
+	loadEmotes: async function() {
+		Channel.info.emotes = {};
+		Channel.info.duplicateEmotes = {};
+
+		DEBUG && console.log("Loading Emotes...");
+		
+		await Channel.loadTwitchEmotes();
+		await Channel.loadFfzEmotes();
+		await Channel.loadBttvEmotes();
+		await Channel.load7tvEmotes();
+
+		DEBUG && console.log("Loading Emotes: Done!");
 	},
 
 	load: async function() {
-		const channelID = await getJson(`https://decapi.me/twitch/id/${Channel.info.channel}`);
+		const channelID = await getJson(`https://decapi.me/twitch/id/${Channel.info.name}`);
 		if(channelID.includes("User not found")) {
 			loading.classList.add("hidden");
 			userNotFound.classList.remove("hidden");
@@ -143,15 +243,15 @@ let Channel = {
 		}
 
 		Channel.info.id = channelID;
-		DEBUG && console.log(Channel.info.channel + ": " + channelID);
-		await Channel.loadEmotes(Channel.info.id);
+		DEBUG && console.log(Channel.info.name + ": " + channelID);
+		await Channel.loadEmotes();
 
 		generateHtml();
 	},
 
-	init: function(channel) {
-		Channel.info.channel = channel;
-		document.title = "Emote Dup Check Tool • " + channel;
+	init: function(channelName) {
+		Channel.info.name = channelName;
+		document.title = "Emote Dup Check Tool • " + channelName;
 		Channel.load();
 	}
 };
@@ -182,6 +282,14 @@ const onReady = (callback) => {
 		});
 	}
 };
+
+const getHtml = (url) => fetch(proxy + url, { method: "GET" }).then(async (response) => {
+	const text = await response.text();
+	return text;
+}).catch((error) => {
+	console.error(error);
+	return {};
+});
 
 const getJson = (url) => fetch(url, { method: "GET" }).then(async (response) => {
 	const contentType = response.headers.get("Content-Type");
