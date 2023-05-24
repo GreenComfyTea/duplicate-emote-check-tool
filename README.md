@@ -10,7 +10,7 @@ Check if you have duplicate emotes on FrankerFaceZ, BetterTTV and 7TV for Twitch
 * **[jChat](https://github.com/giambaJ/jChat)**  
 * **[giambaJ](https://github.com/giambaJ)**  
 
-# Url parameters
+# Url Parameters
 1. **channel=[TWITCH_USERNAME]** - specifies the channel to check for duplicates
 2. **debug=true/false** - enables console logging
 
