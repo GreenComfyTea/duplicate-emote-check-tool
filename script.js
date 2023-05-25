@@ -361,27 +361,27 @@ function generateHtml() {
 			const emoteDuplicateEntity = document.createElement("div");
 			emoteDuplicateEntity.id = "emote-duplicate-entity";
 			
-			const emoteImage = document.createElement("div");
-			emoteImage.id = "emote-image-container";
+			const emoteImageContainer = document.createElement("div");
+			emoteImageContainer.id = "emote-image-container";
 
 			const emoteLink = document.createElement("a");
 			emoteLink.href = `${emoteDuplicate.url}`;
 
-			const image = new Image();
-			image.src = emoteDuplicate.imageUrl;
-			image.id = "emote-image";
+			const emoteImage = new Image();
+			emoteImage.src = emoteDuplicate.imageUrl;
+			emoteImage.id = "emote-image";
 
 			const sizeTagLabel = document.createElement("div");
 			sizeTagLabel.id = "tag-label";
 			
-			image.onload = function() {
-				const sizeTag = document.createTextNode(`${image.naturalWidth}x${image.naturalHeight}`);
+			emoteImage.onload = function() {
+				const sizeTag = document.createTextNode(`${emoteImage.naturalWidth}x${emoteImage.naturalHeight}`);
 				sizeTagLabel.appendChild(sizeTag);
 				//sizeTag.value = `${image.naturalWidth}x${image.naturalHeight}`;
 			};
 
-			emoteLink.appendChild(image);
-			emoteImage.appendChild(emoteLink);
+			emoteLink.appendChild(emoteImage);
+			emoteImageContainer.appendChild(emoteLink);
 
 			const submitTagLabel = document.createElement("div");
 			submitTagLabel.id = "submit-tag-label";
@@ -393,7 +393,7 @@ function generateHtml() {
 
 			submitTagLabel.appendChild(submitButton);
 
-			emoteDuplicateEntity.appendChild(emoteImage);
+			emoteDuplicateEntity.appendChild(emoteImageContainer);
 			emoteDuplicateEntity.appendChild(submitTagLabel);
 			emoteDuplicateEntity.appendChild(sizeTagLabel);
 
