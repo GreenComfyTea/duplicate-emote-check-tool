@@ -1,7 +1,7 @@
 let DEBUG = false;
 
 const MAX_INT = 2147483647;
-const proxy = "https://api.allorigins.win/raw?url=";
+const proxy = "https://corsproxy.io/?";
 
 let Channel = {
 	info: {
@@ -14,9 +14,9 @@ let Channel = {
 	loadTwitchEmotes: async function() {
 		DEBUG && console.log("[Twitch] Loading Emotes...");
 
-		const twitchToolsUrl = `https://twitch-tools.rootonline.de/emotes.php?channel=${Channel.info.name}`;
+		const twitchToolsUrl = `https://twitch-tools.rootonline.de/emotes.php?channel_id=${Channel.info.id}`
 
-		const htmlString = await getHtml(twitchToolsUrl);
+		const htmlString = await getHtml(encodeURIComponent(twitchToolsUrl));
 		
 		const domParser = new DOMParser();
 		const html = domParser.parseFromString(htmlString, 'text/html');
@@ -226,11 +226,12 @@ let Channel = {
 
 		DEBUG && console.log("Loading Emotes...");
 		
-		await Channel.loadTwitchEmotes();
+		
 		await Channel.loadFfzEmotes();
 		await Channel.loadBttvEmotes();
 		await Channel.load7tvEmotes();
-
+		await Channel.loadTwitchEmotes();
+		
 		DEBUG && console.log("Loading Emotes: Done!");
 	},
 
