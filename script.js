@@ -252,7 +252,7 @@ let Channel = {
 
 	init: function(channelName) {
 		Channel.info.name = channelName;
-		document.title = "Emote Dup Check Tool • " + channelName;
+		document.title = "Dup Emote Check Tool • " + channelName;
 		Channel.load();
 	}
 };
