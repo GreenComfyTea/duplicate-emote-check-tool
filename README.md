@@ -1,10 +1,10 @@
-# Emote Duplicate Check Tool
+# Duplicate Emote Check Tool
 **Check if you have duplicates amongst your `Twitch Sub`, `FrankerFaceZ`, `BetterTTV` and `7TV` emotes.**
 
 ![image](https://user-images.githubusercontent.com/30152047/191189377-a9ffd0ea-ae62-4341-8e06-3aabd6de1f40.png)
 
 # Links
-* **[Website](https://greencomfytea.github.io/emote-duplicate-check-tool)**  
+* **[Website](https://greencomfytea.github.io/duplicate-emote-check-tool)**  
 * **[My Twitch](https://www.twitch.tv/GreenComfyTea)**  
 * **[My linktree](https://linktr.ee/greencomfytea)**  
 * **[jChat](https://github.com/giambaJ/jChat)**  
@@ -14,7 +14,7 @@
 1. **channel=[TWITCH_USERNAME]** - specifies the channel to check for duplicates
 2. **debug=true/false** - enables console logging
 
-**Example: https://greencomfytea.github.io/emote-duplicate-check-tool?channel=greencomfytea&debug=true**
+**Example: https://greencomfytea.github.io/duplicate-emote-check-tool?channel=greencomfytea&debug=true**
 
 # Credits
 **GreenComfyTea** - me ;)  
