@@ -89,7 +89,7 @@
 		<img alt="Open Source" src="https://img.shields.io/badge/open%20source-%20yes-brightgreen?logo=openvpn" />
 	</a>
 	<a href="https://www.javascript.com">
-		<img alt="Written in" src="https://custom-icon-badges.demolab.com/badge/written in-html | css | js-fcdc00?logo=terminal" />
+		<img alt="Written in" src="https://custom-icon-badges.demolab.com/badge/written in-html | css | js-f1e05a?logo=terminal" />
 	</a>
 </p>
 
