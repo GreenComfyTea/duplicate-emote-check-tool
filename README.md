@@ -20,21 +20,21 @@
 	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/pulls">
 		<img alt="Pull Requests Closed" src="https://custom-icon-badges.demolab.com/github/issues-pr-closed/greencomfytea/duplicate-emote-check-tool?logo=git-pull-request-closed" />
 	</a>
-<br>
+	<br>
 	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/blob/main/LICENSE">
 		<img alt="License" src="https://custom-icon-badges.demolab.com/github/license/greencomfytea/duplicate-emote-check-tool?logo=law" />
 	</a>
 	<a href="">
 		<img alt="Maintenance" src="https://custom-icon-badges.demolab.com/maintenance/yes/2023?logo=tools" />
 	</a>
-<br>
+	<br>
 	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/commits/main">
 		<img alt="Last Commit" src="https://custom-icon-badges.demolab.com/github/last-commit/greencomfytea/duplicate-emote-check-tool?logo=git-commit" />
 	</a>
-<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/commits/main">
+	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/commits/main">
 		<img alt="Commits" src="https://custom-icon-badges.demolab.com/github/commit-activity/t/greencomfytea/duplicate-emote-check-tool?logo=git-commit" />
 	</a>
-<br>
+	<br>
 	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/graphs/commit-activity">
 		<img alt="Commit Activity (Year)" src="https://custom-icon-badges.demolab.com/github/commit-activity/y/greencomfytea/duplicate-emote-check-tool?logo=pulse" />
 	</a>
@@ -44,7 +44,7 @@
 	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/graphs/commit-activity">
 		<img alt="Commit Activity (Week)" src="https://custom-icon-badges.demolab.com/github/commit-activity/w/greencomfytea/duplicate-emote-check-tool?logo=pulse" />
 	</a>
-<br>
+	<br>
 	<a href="">
 		<img alt="Repo Size" src="https://custom-icon-badges.demolab.com/github/repo-size/greencomfytea/duplicate-emote-check-tool?logo=database" />
 	</a>
@@ -66,7 +66,7 @@
 	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/graphs/traffic">
 		<img alt="Hits" src="https://custom-icon-badges.demolab.com/endpoint?url=https://hits.dwyl.com/greencomfytea/duplicate-emote-check-tool.json?color=blue&logo=eye" />
 	</a>
-<br>
+	<br>
 	<a href="https://greencomfytea.github.io/duplicate-emote-check-tool">
 		<img alt="Website" src="https://custom-icon-badges.demolab.com/website?down_color=red&down_message=down&up_color=brightgreen&up_message=up&logo=link&url=https://greencomfytea.github.io/duplicate-emote-check-tool" />
 	</a>
@@ -79,7 +79,7 @@
 	<a href="https://www.twitch.tv/greencomfytea">
 		<img alt="Twitch" src="https://img.shields.io/twitch/status/greencomfytea?logo=twitch" />
 	</a>
-<br>
+	<br>
 	<a href="https://github.com/greencomfytea">
 		<img alt="Author" src="https://custom-icon-badges.demolab.com/badge/author-GreenComfyTea-green?logo=person" />
 	</a>
