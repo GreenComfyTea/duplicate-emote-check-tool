@@ -1,4 +1,5 @@
 <p align="center">
+	<img alt="Icon" height="128" src="https://github.com/GreenComfyTea/duplicate-emote-check-tool/assets/30152047/9b6027a4-c189-4ee2-b777-afa96a35f82e" />
 	<h2 align="center"><b>Duplicate Emote Check Tool</b></h2>
 	<p align="center">Check if you have duplicates amongst your <code>Twitch Sub</code>, <code>FrankerFaceZ</code>, <code>BetterTTV</code> and <code>7TV</code> emotes.</p>
 </p>
