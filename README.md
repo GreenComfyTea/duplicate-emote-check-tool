@@ -30,10 +30,10 @@
 	<br>
 	<br>
 	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/commits/main">
-		<img alt="Last Commit" src="https://custom-icon-badges.demolab.com/github/last-commit/greencomfytea/duplicate-emote-check-tool?logo=git-commit" />
+		<img alt="Commits" src="https://custom-icon-badges.demolab.com/github/commit-activity/t/greencomfytea/duplicate-emote-check-tool?logo=git-commit" />
 	</a>
 	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/commits/main">
-		<img alt="Commits" src="https://custom-icon-badges.demolab.com/github/commit-activity/t/greencomfytea/duplicate-emote-check-tool?logo=git-commit" />
+		<img alt="Last Commit" src="https://custom-icon-badges.demolab.com/github/last-commit/greencomfytea/duplicate-emote-check-tool?logo=git-commit" />
 	</a>
 	<br>
 	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/graphs/commit-activity">
