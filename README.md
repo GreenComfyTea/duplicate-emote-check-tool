@@ -29,28 +29,6 @@
 	</a>
 	<br>
 	<br>
-	<a href="">
-		<img alt="Repo Size" src="https://custom-icon-badges.demolab.com/github/repo-size/greencomfytea/duplicate-emote-check-tool?logo=database" />
-	</a>
-	<a href="">
-		<img alt="Goto Counter" src="https://custom-icon-badges.demolab.com/github/search/greencomfytea/duplicate-emote-check-tool/goto?logo=git-compare" />
-	</a>
-	<a href="https://github.com/sponsors/greencomfytea">
-		<img alt="Sponsors" src="https://custom-icon-badges.demolab.com/github/sponsors/greencomfytea?logo=heart" />
-	</a>
-	<a href="https://github.com/GreenComfyTea/duplicate-emote-check-tool/watchers">
-		<img alt="Watchers" src="https://custom-icon-badges.demolab.com/github/watchers/greencomfytea/duplicate-emote-check-tool?logo=eye" />
-	</a>
-	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/forks">
-		<img alt="Forks" src="https://custom-icon-badges.demolab.com/github/forks/greencomfytea/duplicate-emote-check-tool?logo=repo-forked" />
-	</a>
-	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/stargazers">
-		<img alt="Stars" src="https://custom-icon-badges.demolab.com/github/stars/greencomfytea/duplicate-emote-check-tool?logo=star" />
-	</a>
-	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/graphs/traffic">
-		<img alt="Hits" src="https://custom-icon-badges.demolab.com/endpoint?url=https://hits.dwyl.com/greencomfytea/duplicate-emote-check-tool.json?color=blue&logo=eye" />
-	</a>
-	<br>
 	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/commits/main">
 		<img alt="Last Commit" src="https://custom-icon-badges.demolab.com/github/last-commit/greencomfytea/duplicate-emote-check-tool?logo=git-commit" />
 	</a>
@@ -66,6 +44,33 @@
 	</a>
 	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/graphs/commit-activity">
 		<img alt="Commit Activity (Week)" src="https://custom-icon-badges.demolab.com/github/commit-activity/w/greencomfytea/duplicate-emote-check-tool?logo=pulse" />
+	</a>
+	<br>
+	<br>
+	<a href="">
+		<img alt="Repo Size" src="https://custom-icon-badges.demolab.com/github/repo-size/greencomfytea/duplicate-emote-check-tool?logo=database" />
+	</a>
+	<a href="">
+		<img alt="Line Count" src="https://sloc.xyz/github/greencomfytea/duplicate-emote-check-tool" />
+	</a>
+	<a href="">
+		<img alt="Goto Counter" src="https://custom-icon-badges.demolab.com/github/search/greencomfytea/duplicate-emote-check-tool/goto?logo=git-compare" />
+	</a>
+	<br>
+	<a href="https://github.com/sponsors/greencomfytea">
+		<img alt="Sponsors" src="https://custom-icon-badges.demolab.com/github/sponsors/greencomfytea?logo=heart" />
+	</a>
+	<a href="https://github.com/GreenComfyTea/duplicate-emote-check-tool/watchers">
+		<img alt="Watchers" src="https://custom-icon-badges.demolab.com/github/watchers/greencomfytea/duplicate-emote-check-tool?logo=eye" />
+	</a>
+	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/forks">
+		<img alt="Forks" src="https://custom-icon-badges.demolab.com/github/forks/greencomfytea/duplicate-emote-check-tool?logo=repo-forked" />
+	</a>
+	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/stargazers">
+		<img alt="Stars" src="https://custom-icon-badges.demolab.com/github/stars/greencomfytea/duplicate-emote-check-tool?logo=star" />
+	</a>
+	<a href="https://github.com/greencomfytea/duplicate-emote-check-tool/graphs/traffic">
+		<img alt="Hits" src="https://custom-icon-badges.demolab.com/endpoint?url=https://hits.dwyl.com/greencomfytea/duplicate-emote-check-tool.json?color=blue&logo=eye" />
 	</a>
 	<br>
 	<br>
