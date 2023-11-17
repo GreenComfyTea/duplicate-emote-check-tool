@@ -37,6 +37,9 @@ let Channel = {
 		for (const endpoint of twitchEndpoints) {
 			const json = await getJson(`https://emotes.adamcy.pl/v1/${endpoint}`);
 
+			const isGlobal = endpoint.includes("global/emotes");
+			const globalString = isGlobal ? "/GLOBAL" : "";
+
 			if(json.error !== undefined) {
 				console.error(`[Adamci API${globalString}] ${endpoint}: ${json.error}`);
 				continue;
@@ -46,9 +49,6 @@ let Channel = {
 				console.error(`[Adamci API${globalString}] ${endpoint}: No Emotes found!`);
 				continue;
 			}
-
-			const isGlobal = endpoint.includes("global/emotes");
-			const globalString = isGlobal ? "/GLOBAL" : "";
 
 			json.forEach(emote => {
 				const providerName = providers[emote.provider];
@@ -98,6 +98,9 @@ let Channel = {
 		for (const endpoint of twitchEndpoints) {
 			const json = await getJson(`https://emotes.adamcy.pl/v1/${endpoint}`);
 
+			const isGlobal = endpoint.includes("global/emotes");
+			const globalString = isGlobal ? "/GLOBAL" : "";
+
 			if(json.error !== undefined) {
 				console.error(`[Adamci API/Twitch${globalString}] ${endpoint}: ${json.error}`);
 				continue;
@@ -107,9 +110,6 @@ let Channel = {
 				console.error(`[Adamci API/Twitch${globalString}] ${endpoint}: No Emotes found!`);
 				continue;
 			}
-
-			const isGlobal = endpoint.includes("global/emotes");
-			const globalString = isGlobal ? "/GLOBAL" : "";
 
 			json.forEach(emote => {
 				const providerName = providers[emote.provider];
