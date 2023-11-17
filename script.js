@@ -291,7 +291,7 @@ let Channel = {
 					Channel.info.duplicateEmotes[emote.name] = Channel.info.emotes[emote.name];
 				}
 
-				DEBUG && console.log(`[7TV${globalString}] ${emote.name}: ${url}`);
+				DEBUG && console.log(`[7TV${globalString}] ${emote.name}: ${new_emote.url}`);
 			});
 
 			DEBUG && console.log(`[7TV${globalString}] Done!`);
@@ -323,15 +323,7 @@ let Channel = {
 	},
 
 	load: async function() {
-		const channelID = await getJson(`https://decapi.me/twitch/id/${Channel.info.name}`);
-		if(channelID.includes("User not found")) {
-			loading.classList.add("hidden");
-			userNotFound.classList.remove("hidden");
-			return;
-		}
-
-		Channel.info.id = channelID;
-		DEBUG && console.log(Channel.info.name + ": " + channelID);
+		await Channel.initId();
 		await Channel.loadEmotes();
 
 		generateHtml();
@@ -339,6 +331,9 @@ let Channel = {
 
 	init: function(channelName) {
 		Channel.info.name = channelName;
+		Channel.info.id = 0;
+		Channel.info.emotes = {};
+		Channel.info.duplicateEmotes = {};
 		document.title = channelName + " • Dup Emote Check Tool";
 		Channel.load();
 	}
@@ -393,7 +388,8 @@ function calculateDuplicateEmotes(event) {
 	if (event !== null) {
 		event.preventDefault();
 	}
-
+	
+	checkButton.classList.add("disabled");
 	userNotFound.classList.add("hidden");
 	noEmoteDuplicates.classList.add("hidden");
 	result.classList.add("hidden");
@@ -511,6 +507,8 @@ function generateHtml() {
 		result.classList.remove("hidden");
 	}
 
+	checkButton.classList.remove("disabled");
+
 	DEBUG && console.log("All emotes: ");
 	DEBUG && console.log(Channel.info.emotes);
 	DEBUG && console.log("Duplicate emotes: ");
@@ -519,6 +517,7 @@ function generateHtml() {
 
 const generator = document.getElementById("generator");
 const channel = document.getElementById("channel");
+const checkButton = document.getElementById("check_button");
 const loading = document.getElementById("loading");
 const userNotFound = document.getElementById("user-not-found");
 const noEmoteDuplicates = document.getElementById("no-emote-duplicates");
