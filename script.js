@@ -67,7 +67,7 @@ let Channel = {
 					url = `${url}${emoteId}`;
 				}
 				
-				const new_emote = {
+				const newEmote = {
 					name: emote.code,
 					id: emoteId,
 					type: providerName,
@@ -77,10 +77,10 @@ let Channel = {
 				};
 	
 				if (Channel.info.emotes[emote.code] === undefined) {
-					Channel.info.emotes[emote.code] = [new_emote];
+					Channel.info.emotes[emote.code] = [newEmote];
 				}
 				else {
-					Channel.info.emotes[emote.code].push(new_emote);
+					Channel.info.emotes[emote.code].push(newEmote);
 					Channel.info.duplicateEmotes[emote.code] = Channel.info.emotes[emote.code];
 				}
 
@@ -125,7 +125,7 @@ let Channel = {
 					url = `${url}${emoteId}-${emote.code}`;
 				}
 				
-				const new_emote = {
+				const newEmote = {
 					name: emote.code,
 					id: emoteId,
 					type: providerName,
@@ -135,10 +135,10 @@ let Channel = {
 				};
 	
 				if (Channel.info.emotes[emote.code] === undefined) {
-					Channel.info.emotes[emote.code] = [new_emote];
+					Channel.info.emotes[emote.code] = [newEmote];
 				}
 				else {
-					Channel.info.emotes[emote.code].push(new_emote);
+					Channel.info.emotes[emote.code].push(newEmote);
 					Channel.info.duplicateEmotes[emote.code] = Channel.info.emotes[emote.code];
 				}
 
@@ -177,7 +177,7 @@ let Channel = {
 					upscale = true;
 				}
 
-				const new_emote = {
+				const newEmote = {
 					name: emote.code,
 					id: emote.id,
 					type: "FFZ",
@@ -188,10 +188,10 @@ let Channel = {
 				};
 	
 				if (Channel.info.emotes[emote.code] === undefined) {
-					Channel.info.emotes[emote.code] = [new_emote];
+					Channel.info.emotes[emote.code] = [newEmote];
 				}
 				else {
-					Channel.info.emotes[emote.code].push(new_emote);
+					Channel.info.emotes[emote.code].push(newEmote);
 					Channel.info.duplicateEmotes[emote.code] = Channel.info.emotes[emote.code];
 				}
 
@@ -225,7 +225,7 @@ let Channel = {
 				const url = `https://betterttv.com/emotes/${emote.id}`;
 				const imageUrl = `https://cdn.betterttv.net/emote/${emote.id}/3x`
 
-				const new_emote = {
+				const newEmote = {
 					name: emote.code,
 					id: emote.id,
 					type: "BTTV",
@@ -236,10 +236,10 @@ let Channel = {
 				};
 
 				if (Channel.info.emotes[emote.code] === undefined) {
-					Channel.info.emotes[emote.code] = [new_emote];
+					Channel.info.emotes[emote.code] = [newEmote];
 				}
 				else {
-					Channel.info.emotes[emote.code].push(new_emote);
+					Channel.info.emotes[emote.code].push(newEmote);
 					Channel.info.duplicateEmotes[emote.code] = Channel.info.emotes[emote.code];
 				}
 
@@ -275,7 +275,7 @@ let Channel = {
 			emotes.forEach(emote => {
 				const host = emote.data.host;
 
-				const new_emote = {
+				const newEmote = {
 					name: emote.name,
 					id: emote.id,
 					type: "7TV",
@@ -285,14 +285,24 @@ let Channel = {
 				};
 
 				if (Channel.info.emotes[emote.name] === undefined) {
-					Channel.info.emotes[emote.name] = [new_emote];
+					Channel.info.emotes[emote.name] = [newEmote];
 				}
 				else {
-					Channel.info.emotes[emote.name].push(new_emote);
+					let misduplicate = Channel.info.emotes[emote.name].some(oldEmote => 
+						oldEmote.name === newEmote.name &&
+						oldEmote.id === newEmote.id &&
+						oldEmote.type === newEmote.type
+					);
+
+					if(misduplicate) {
+						return;
+					}
+
+					Channel.info.emotes[emote.name].push(newEmote);
 					Channel.info.duplicateEmotes[emote.name] = Channel.info.emotes[emote.name];
 				}
 
-				DEBUG && console.log(`[7TV${globalString}] ${emote.name}: ${new_emote.url}`);
+				DEBUG && console.log(`[7TV${globalString}] ${emote.name}: ${newEmote.url}`);
 			});
 
 			DEBUG && console.log(`[7TV${globalString}] Done!`);
