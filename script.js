@@ -1,5 +1,7 @@
 let DEBUG = false;
 
+let cachedOpacity = 0;
+
 const providers = ["Twitch", "7TV", "BTTV", "FFZ"];
 const staticEmoteUrls = ["", "https://7tv.app/emotes/", "https://betterttv.com/emotes/", "https://www.frankerfacez.com/emoticon/"];
 const providerIds = {
@@ -8,7 +10,6 @@ const providerIds = {
 	"BTTV": 2,
 	"FFZ": 3
 };
-
 
 let Channel = {
 	info: {
@@ -388,8 +389,8 @@ function calculateDuplicateEmotes(event) {
 	if (event !== null) {
 		event.preventDefault();
 	}
-	
-	checkButton.classList.add("disabled");
+
+	submitContainer.classList.add("disabled");
 	userNotFound.classList.add("hidden");
 	noEmoteDuplicates.classList.add("hidden");
 	result.classList.add("hidden");
@@ -507,7 +508,7 @@ function generateHtml() {
 		result.classList.remove("hidden");
 	}
 
-	checkButton.classList.remove("disabled");
+	submitContainer.classList.remove("disabled");
 
 	DEBUG && console.log("All emotes: ");
 	DEBUG && console.log(Channel.info.emotes);
@@ -517,7 +518,7 @@ function generateHtml() {
 
 const generator = document.getElementById("generator");
 const channel = document.getElementById("channel");
-const checkButton = document.getElementById("check_button");
+const submitContainer = document.getElementById("submit-container");
 const loading = document.getElementById("loading");
 const userNotFound = document.getElementById("user-not-found");
 const noEmoteDuplicates = document.getElementById("no-emote-duplicates");

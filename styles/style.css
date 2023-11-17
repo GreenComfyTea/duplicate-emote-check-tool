@@ -226,6 +226,7 @@ select {
 
 .disabled {
 	pointer-events: none;
+	opacity: .5;
 }
 
 #fade_seconds {
