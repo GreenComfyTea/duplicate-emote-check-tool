@@ -23,7 +23,7 @@ let Channel = {
 
 		const emotesFoundCountHtml = html.getElementsByClassName("col-12 mb-3");
 
-		if (emotesFoundCountHtml.length == 0) {
+		if (emotesFoundCountHtml.length === 0) {
 			console.log("[Twitch] No user found!");
 			return;
 		}
@@ -40,10 +40,10 @@ let Channel = {
 
 		for (const emoteCard of emoteCardsArray) {
 			const emoteNameArray = emoteCard.getElementsByClassName("mt-2 text-center");
-			const emoteName = emoteNameArray.length == 0 ? "followerEmote" + Math.floor(Math.random() * MAX_INT) : emoteNameArray[0].textContent;
+			const emoteName = emoteNameArray.length === 0 ? "followerEmote" + Math.floor(Math.random() * MAX_INT) : emoteNameArray[0].textContent;
 			
 			const imageUrlArray = emoteCard.getElementsByTagName("a"); 
-			if (imageUrlArray.length == 0) {
+			if (imageUrlArray.length === 0) {
 				continue;
 			}
 
@@ -61,7 +61,7 @@ let Channel = {
 				upscale: false
 			};
 
-			if (Channel.info.emotes[emoteName] == undefined) {
+			if (Channel.info.emotes[emoteName] === undefined) {
 				Channel.info.emotes[emoteName] = [new_emote];
 			}
 			else {
@@ -82,10 +82,10 @@ let Channel = {
 		for (const endpoint of ffzEndpoints) {
 			const json = await getJson(`https://api.betterttv.net/3/cached/frankerfacez/${endpoint}`);
 
-			const isGlobal = endpoint == "emotes/global";
+			const isGlobal = endpoint === "emotes/global";
 			const globalString = isGlobal ? " GLOBAL" : "";
 
-			if(json.length == 0) {
+			if(json.length === 0) {
 				console.error(`[FFZ${globalString}] No user found!`);
 				continue;
 			}
@@ -113,7 +113,7 @@ let Channel = {
 					upscale: upscale
 				};
 	
-				if (Channel.info.emotes[emote.code] == undefined) {
+				if (Channel.info.emotes[emote.code] === undefined) {
 					Channel.info.emotes[emote.code] = [new_emote];
 				}
 				else {
@@ -135,7 +135,7 @@ let Channel = {
 		for (const endpoint of bttvEndpoints) {
 			let json = await getJson(`https://api.betterttv.net/3/cached/${endpoint}`);
 
-			const isGlobal = endpoint == "emotes/global";
+			const isGlobal = endpoint === "emotes/global";
 			const globalString = isGlobal ? " GLOBAL" : "";
 
 			if(json.message != undefined) {
@@ -161,7 +161,7 @@ let Channel = {
 					zeroWidth: ["5e76d338d6581c3724c0f0b2", "5e76d399d6581c3724c0f0b8", "567b5b520e984428652809b6", "5849c9a4f52be01a7ee5f79d", "567b5c080e984428652809ba", "567b5dc00e984428652809bd", "58487cc6f52be01a7ee5f205", "5849c9c8f52be01a7ee5f79e"].includes(emote.id) // "5e76d338d6581c3724c0f0b2" => cvHazmat, "5e76d399d6581c3724c0f0b8" => cvMask, "567b5b520e984428652809b6" => SoSnowy, "5849c9a4f52be01a7ee5f79d" => IceCold, "567b5c080e984428652809ba" => CandyCane, "567b5dc00e984428652809bd" => ReinDeer, "58487cc6f52be01a7ee5f205" => SantaHat, "5849c9c8f52be01a7ee5f79e" => TopHat
 				};
 
-				if (Channel.info.emotes[emote.code] == undefined) {
+				if (Channel.info.emotes[emote.code] === undefined) {
 					Channel.info.emotes[emote.code] = [new_emote];
 				}
 				else {
@@ -179,19 +179,28 @@ let Channel = {
 	load7tvEmotes: async function() {
 		DEBUG && console.log("Loading 7TV Emotes...");
 
-		const _7tvEndpoints = ["emotes/global", `users/${encodeURIComponent(Channel.info.id)}/emotes`];
+		const _7tvEndpoints = ["emote-sets/global", `users/twitch/${encodeURIComponent(Channel.info.id)}`];
 		for (const endpoint of _7tvEndpoints) {
-			const json = await getJson(`https://api.7tv.app/v2/${endpoint}`);
+			const json = await getJson(`https://7tv.io/v3/${endpoint}`);
 
-			const isGlobal = endpoint == "emotes/global";
+			const isGlobal = endpoint  ===  "emote-sets/global";
 			const globalString = isGlobal ? " GLOBAL" : "";
 
 			if(json.error != undefined) {
 				console.error(`[7TV${globalString}] Error: ${json.error}`);
 				continue;
 			}
+			console.log(json);
+
+			let emotes;
+			if(isGlobal) {
+				emotes = json["emotes"];
+			}
+			else {
+				emotes = json["emote-set"]["emotes"];
+			}
 			
-			json.forEach(emote => {
+			emotes.forEach(emote => {
 				const url = `https://7tv.app/emotes/${emote.id}`;
 				const imageUrl = emote.urls[emote.urls.length - 1][1];
 
@@ -205,7 +214,7 @@ let Channel = {
 					zeroWidth: emote.visibility_simple.includes("ZERO_WIDTH")
 				};
 
-				if (Channel.info.emotes[emote.name] == undefined) {
+				if (Channel.info.emotes[emote.name] === undefined) {
 					Channel.info.emotes[emote.name] = [new_emote];
 				}
 				else {
@@ -277,7 +286,7 @@ const onReady = (callback) => {
 	}
 	else {
 		document.attachEvent("onreadystatechange", function() {
-			if (document.readyState == "complete") {
+			if (document.readyState === "complete") {
 				callback();
 			}
 		});
@@ -323,7 +332,7 @@ function calculateDuplicateEmotes(event) {
 	}
 
 	encodedUrlParameters = encodeQueryData(urlParameters);
-	let urlParameterString = `${window.location.pathname}${encodedUrlParameters == "" ? "" : "?"}${encodedUrlParameters}`;
+	let urlParameterString = `${window.location.pathname}${encodedUrlParameters === "" ? "" : "?"}${encodedUrlParameters}`;
 
 	window.history.pushState(null, "", urlParameterString);
 
@@ -442,7 +451,7 @@ generator.addEventListener("submit", (event) => calculateDuplicateEmotes(event))
 onReady(() => { 
 	const searchParameters = new URLSearchParams(window.location.search);
 	if(searchParameters.has("debug")) {
-		DEBUG = searchParameters.get("debug").toLocaleLowerCase() == "true";
+		DEBUG = searchParameters.get("debug").toLocaleLowerCase() === "true";
 	}
 
 	if(searchParameters.has("channel")) {
