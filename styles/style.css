@@ -224,6 +224,10 @@ select {
 	display: none !important;
 }
 
+.disabled {
+	pointer-events: none;
+}
+
 #fade_seconds {
 	margin: 10px;
 	font-size: 0.7em;
