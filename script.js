@@ -1,7 +1,14 @@
 let DEBUG = false;
 
-const MAX_INT = 2147483647;
-const proxy = "https://corsproxy.io/?";
+const providers = ["Twitch", "7TV", "BTTV", "FFZ"];
+const staticEmoteUrls = ["", "https://7tv.app/emotes/", "https://betterttv.com/emotes/", "https://www.frankerfacez.com/emoticon/"];
+const providerIds = {
+	"Twitch": 0,
+	"_7TV": 1,
+	"BTTV": 2,
+	"FFZ": 3
+};
+
 
 let Channel = {
 	info: {
@@ -11,68 +18,134 @@ let Channel = {
 		duplicateEmotes: {}
 	},
 
-	loadTwitchEmotes: async function() {
-		DEBUG && console.log("[Twitch] Loading Emotes...");
-
-		const twitchToolsUrl = `https://twitch-tools.rootonline.de/emotes.php?channel_id=${Channel.info.id}`
-
-		const htmlString = await getHtml(encodeURIComponent(twitchToolsUrl));
-		
-		const domParser = new DOMParser();
-		const html = domParser.parseFromString(htmlString, 'text/html');
-
-		const emotesFoundCountHtml = html.getElementsByClassName("col-12 mb-3");
-
-		if (emotesFoundCountHtml.length === 0) {
-			console.log("[Twitch] No user found!");
+	initId: async function() {
+		const channelID = await getJson(`https://decapi.me/twitch/id/${Channel.info.name}`);
+		if(channelID.includes("User not found")) {
 			return;
 		}
 
-		const emotesFoundCountString = emotesFoundCountHtml[0].textContent;
+		Channel.info.id = channelID;
+		DEBUG && console.log(Channel.info.name + ": " + channelID);
+	},
 
-		if (emotesFoundCountString.includes("No emotes")) {
-			console.log("[Twitch] No user found!");
-			return;
-		}
+	loadAllEmotes: async function() {
+		DEBUG && console.log("[Adamci API] Loading All Emotes...");
 
-		const emotesHtml = html.getElementsByClassName("row mb-3")[0];
-		const emoteCardsArray = emotesHtml.getElementsByClassName("card-body");
+		const twitchEndpoints = ["global/emotes/all", `channel/${encodeURIComponent(Channel.info.name)}/emotes/all`];
 
-		for (const emoteCard of emoteCardsArray) {
-			const emoteNameArray = emoteCard.getElementsByClassName("mt-2 text-center");
-			const emoteName = emoteNameArray.length === 0 ? "followerEmote" + Math.floor(Math.random() * MAX_INT) : emoteNameArray[0].textContent;
-			
-			const imageUrlArray = emoteCard.getElementsByTagName("a"); 
-			if (imageUrlArray.length === 0) {
+		for (const endpoint of twitchEndpoints) {
+			const json = await getJson(`https://emotes.adamcy.pl/v1/${endpoint}`);
+
+			if(json.error !== undefined) {
+				console.error(`[Adamci API${globalString}] ${endpoint}: ${json.error}`);
 				continue;
 			}
 
-			const imageUrl = imageUrlArray[0].href.replace("light","dark");
-
-			const emoteID = imageUrl.split('/')[5];
-
-			const new_emote = {
-				name: emoteName,
-				id: emoteID,
-				type: "Twitch Sub",
-				url: imageUrl,
-				imageUrl: imageUrl,
-				isGlobal: false,
-				upscale: false
-			};
-
-			if (Channel.info.emotes[emoteName] === undefined) {
-				Channel.info.emotes[emoteName] = [new_emote];
-			}
-			else {
-				Channel.info.emotes[emoteName].push(new_emote);
-				Channel.info.duplicateEmotes[emoteName] = Channel.info.emotes[emoteName];
+			if(json.length === 0) {
+				console.error(`[Adamci API${globalString}] ${endpoint}: No Emotes found!`);
+				continue;
 			}
 
-			DEBUG && console.log(`[Twitch] ${emoteName}: ${imageUrl}`);
+			const isGlobal = endpoint.includes("global/emotes");
+			const globalString = isGlobal ? "/GLOBAL" : "";
+
+			json.forEach(emote => {
+				const providerName = providers[emote.provider];
+				const imageUrl = emote.urls.slice(-1)[0].url.replace("light", "dark");
+				const emoteIdSplit = imageUrl.split('/');
+				const emoteId = emoteIdSplit[emoteIdSplit.length - 2];
+
+				let url = staticEmoteUrls[emote.provider];
+				if (url === "") {
+					url = imageUrl;
+				}
+				else if(emote.provider === 3) { // 7TV
+					url = `${url}${emoteId}-${emote.code}`;
+				}
+				else {
+					url = `${url}${emoteId}`;
+				}
+				
+				const new_emote = {
+					name: emote.code,
+					id: emoteId,
+					type: providerName,
+					url: url,
+					imageUrl: imageUrl,
+					isGlobal: isGlobal
+				};
+	
+				if (Channel.info.emotes[emote.code] === undefined) {
+					Channel.info.emotes[emote.code] = [new_emote];
+				}
+				else {
+					Channel.info.emotes[emote.code].push(new_emote);
+					Channel.info.duplicateEmotes[emote.code] = Channel.info.emotes[emote.code];
+				}
+
+				DEBUG && console.log(`[Adamci API/${providerName}${globalString}] ${emote.code}: ${imageUrl}`);
+			});
+
+			DEBUG && console.log(`[Adamci API${globalString}] Done!`);
 		}
+	},
 
-		DEBUG && console.log(`[Twitch] Loading Emotes from ${twitchToolsUrl}: Done!`);
+	loadTwitchEmotes: async function() {
+		DEBUG && console.log("[Twitch] Loading emotes...");
+
+		const twitchEndpoints = ["global/emotes/twitch", `channel/${encodeURIComponent(Channel.info.name)}/emotes/twitch`];
+		for (const endpoint of twitchEndpoints) {
+			const json = await getJson(`https://emotes.adamcy.pl/v1/${endpoint}`);
+
+			if(json.error !== undefined) {
+				console.error(`[Adamci API/Twitch${globalString}] ${endpoint}: ${json.error}`);
+				continue;
+			}
+
+			if(json.length === 0) {
+				console.error(`[Adamci API/Twitch${globalString}] ${endpoint}: No Emotes found!`);
+				continue;
+			}
+
+			const isGlobal = endpoint.includes("global/emotes");
+			const globalString = isGlobal ? "/GLOBAL" : "";
+
+			json.forEach(emote => {
+				const providerName = providers[emote.provider];
+				const imageUrl = emote.urls.slice(-1)[0].url.replace("light", "dark");
+				const emoteIdSplit = imageUrl.split('/');
+				const emoteId = emoteIdSplit[emoteIdSplit.length - 2];
+
+				let url = staticEmoteUrls[emote.provider];
+				if (url === "") {
+					url = imageUrl;
+				}
+				else if(emote.provider === 3) { // 7TV
+					url = `${url}${emoteId}-${emote.code}`;
+				}
+				
+				const new_emote = {
+					name: emote.code,
+					id: emoteId,
+					type: providerName,
+					url: url,
+					imageUrl: imageUrl,
+					isGlobal: isGlobal
+				};
+	
+				if (Channel.info.emotes[emote.code] === undefined) {
+					Channel.info.emotes[emote.code] = [new_emote];
+				}
+				else {
+					Channel.info.emotes[emote.code].push(new_emote);
+					Channel.info.duplicateEmotes[emote.code] = Channel.info.emotes[emote.code];
+				}
+
+				DEBUG && console.log(`[Adamci API/Twitch${globalString}] ${emote.code}: ${imageUrl}`);
+			});
+
+			DEBUG && console.log(`[Adamci API/Twitch${globalString}] Done!`);
+		}
 	},
 
 	loadFfzEmotes: async function() {
@@ -138,7 +211,7 @@ let Channel = {
 			const isGlobal = endpoint === "emotes/global";
 			const globalString = isGlobal ? " GLOBAL" : "";
 
-			if(json.message != undefined) {
+			if(json.message !== undefined) {
 				console.error(`[BTTV${globalString}] Error: ${json.message}`);
 				continue;
 			}
@@ -177,41 +250,37 @@ let Channel = {
 	},
 
 	load7tvEmotes: async function() {
-		DEBUG && console.log("Loading 7TV Emotes...");
+		DEBUG && console.log("[7TV] Loading emotes...");
 
 		const _7tvEndpoints = ["emote-sets/global", `users/twitch/${encodeURIComponent(Channel.info.id)}`];
 		for (const endpoint of _7tvEndpoints) {
 			const json = await getJson(`https://7tv.io/v3/${endpoint}`);
+			
+			const isGlobal = endpoint === "emote-sets/global";
+			const globalString = isGlobal ? "/GLOBAL" : "";
 
-			const isGlobal = endpoint  ===  "emote-sets/global";
-			const globalString = isGlobal ? " GLOBAL" : "";
-
-			if(json.error != undefined) {
-				console.error(`[7TV${globalString}] Error: ${json.error}`);
+			if(json.error !== undefined) {
+				console.error(`[7TV${globalString}] ${json.error}`);
 				continue;
 			}
-			console.log(json);
 
-			let emotes;
-			if(isGlobal) {
-				emotes = json["emotes"];
+			let emotes = isGlobal ? json.emotes : json.emote_set.emotes;
+
+			if(emotes === undefined) {
+				DEBUG && console.log(`[7TV${globalString}] Done!`);
+				continue;
 			}
-			else {
-				emotes = json["emote-set"]["emotes"];
-			}
-			
+
 			emotes.forEach(emote => {
-				const url = `https://7tv.app/emotes/${emote.id}`;
-				const imageUrl = emote.urls[emote.urls.length - 1][1];
+				const host = emote.data.host;
 
 				const new_emote = {
 					name: emote.name,
 					id: emote.id,
 					type: "7TV",
-					url: url,
-					imageUrl: imageUrl,
-					isGlobal: isGlobal,
-					zeroWidth: emote.visibility_simple.includes("ZERO_WIDTH")
+					url: `https://7tv.app/emotes/${emote.id}`,
+					imageUrl: `https:${host.url}/${host.files.slice(-1)[0].name}`,
+					isGlobal: isGlobal
 				};
 
 				if (Channel.info.emotes[emote.name] === undefined) {
@@ -225,23 +294,32 @@ let Channel = {
 				DEBUG && console.log(`[7TV${globalString}] ${emote.name}: ${url}`);
 			});
 
-			DEBUG && console.log(`[7TV${globalString}] Loading Emotes from ${endpoint}: Done!`);
+			DEBUG && console.log(`[7TV${globalString}] Done!`);
 		}
 	},
 
 	loadEmotes: async function() {
-		Channel.info.emotes = {};
-		Channel.info.duplicateEmotes = {};
+		await Channel.loadAllEmotes();
 
-		DEBUG && console.log("Loading Emotes...");
-		
-		
-		await Channel.loadFfzEmotes();
-		await Channel.loadBttvEmotes();
-		await Channel.load7tvEmotes();
-		await Channel.loadTwitchEmotes();
-		
-		DEBUG && console.log("Loading Emotes: Done!");
+		await Channel.initId();
+
+		if(Channel.info.emotes.length === 0) {
+			// await Channel.initId();
+
+			if(Channel.info.id !== 0) {
+				await Channel.loadTwitchEmotes();
+				await Channel.loadFfzEmotes();
+				await Channel.loadBttvEmotes();
+				// await Channel.load7tvEmotes();
+			}
+		}
+
+		if(Channel.info.id !== 0) {
+			await Channel.load7tvEmotes();
+		}
+
+		DEBUG && console.log("Loading emotes: done!");
+		DEBUG && console.log(Channel.info.emotes);
 	},
 
 	load: async function() {
@@ -278,7 +356,7 @@ function encodeQueryData(urlParameters) {
 }
 
 const onReady = (callback) => {
-	if (document.readyState != "loading") {
+	if (document.readyState !== "loading") {
 		callback();
 	}
 	else if (document.addEventListener) {
@@ -312,7 +390,7 @@ const getJson = (url) => fetch(url, { method: "GET" }).then(async (response) => 
 }).catch((error) => console.error(error));
 
 function calculateDuplicateEmotes(event) {
-	if (event != null) {
+	if (event !== null) {
 		event.preventDefault();
 	}
 
